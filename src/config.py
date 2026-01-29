@@ -25,6 +25,3 @@ CRYPTO_SYMBOLS = ["BTC", "ETH", "USDT", "USDC", "DAI"]
 
 BIS_API_BASE = "https://stats.bis.org/api/v1"
 DEFI_LLAMA_API = "https://api.llama.fi"
-
-for directory in [RAW_DATA_DIR, PROCESSED_DATA_DIR, FIGURES_DIR, TABLES_DIR, REPORTS_DIR]:
-    directory.mkdir(parents=True, exist_ok=True)

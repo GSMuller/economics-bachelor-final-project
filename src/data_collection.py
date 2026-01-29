@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import yfinance as yf
+from pandas_datareader import data as pdr
 from datetime import datetime
 from .config import *
 
@@ -10,13 +11,35 @@ def fetch_bis_derivatives(start_year, end_year):
     pass
 
 
+def fetch_exchange_rates_fred(start_date, end_date):
+    """Coleta taxas de câmbio históricas do FRED (Federal Reserve)."""
+    series = {
+        "GBP": "DEXUSUK",
+        "JPY": "DEXJPUS", 
+        "CHF": "DEXSZUS",
+        "CAD": "DEXCAUS",
+        "DEM": "DEXGEUS"
+    }
+    
+    data = {}
+    for name, code in series.items():
+        try:
+            df = pdr.DataReader(code, "fred", start_date, end_date)
+            data[name] = df[code]
+        except:
+            print(f"Falha ao coletar {name}")
+    
+    return pd.DataFrame(data)
+
+
 def fetch_exchange_rates(currencies, start_date, end_date):
-    """Coleta taxas de câmbio históricas."""
+    """Coleta taxas de câmbio históricas (Yahoo Finance - dados recentes)."""
     data = {}
     for currency in currencies:
         ticker = f"{currency}=X"
         df = yf.download(ticker, start=start_date, end=end_date, progress=False)
-        data[currency] = df["Close"]
+        if not df.empty:
+            data[currency] = df["Close"]
     return pd.DataFrame(data)
 
 
